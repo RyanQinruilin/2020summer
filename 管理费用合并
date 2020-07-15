@@ -1,0 +1,47 @@
+import pandas as pd
+import os
+import re
+
+path_=" "
+
+#获取文件夹下的所有excel表
+
+company=[]
+small_file = []
+for root, dirs, files in os.walk(path_):
+    print('*'*75)
+    print('root',root) #当前目录路径 
+    company.append(root)
+    print('*'*50)
+    print('dirs',dirs) #当前路径下所有子目录  
+    print('*'*25)
+    print(files) #当前路径下所有非目录子文件
+    small_file.append(files)
+
+#建立输出表
+REsult = pd.DataFrame()
+
+for i in range(2,len(small_file)):
+    #i = 29
+    for k in range(0,len(small_file[i])):
+        #k = 1
+            #print(k)
+        PATH = company[i]+'\\'+small_file[i][k]
+        data = pd.read_excel(PATH,sheet_name='截止测试-管理')
+        #print(PATH)
+        data_ = data[10:]
+        data_.columns = data_.iloc[0]
+        data_ = data_[1:]
+        try:
+            data_ = data_[['日期','凭证号','内容','对方科目','金额','备注','是否跨期是（√）否（×）']]
+            result = data_[(data_['凭证号'].notnull())&(data_['备注'].notnull())]
+            if len(result)>0:
+                result['主体']=[company[i][-4:]]*len(result)
+                #result_ = result[]
+                result_ =result[[ '主体','日期', '凭证号', '内容', '对方科目', '金额', '备注', '是否跨期是（√）否（×）']].reset_index()
+                #result_
+                REsult = REsult.append(result_)
+            else:pass
+        except:
+            print(company[i][-4:])
+            continue
