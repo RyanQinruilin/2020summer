@@ -1,0 +1,53 @@
+import os
+import pandas as pd
+
+path =""
+
+#读取关键词
+kwrds = []
+
+filename = []
+dires = []
+def file_name(file_dir):
+    for root,dirs,files in os.walk(file_dir):
+        print(root)#当前目录路径  
+        print(dirs)#当前路径下所有子目录  
+        print(files)#当前路径下所有非目录子文件
+        #for file in files:
+        filename.append(files)
+        dires.append(dirs)
+        
+#整合一下
+i = 0
+j = 1
+cannotexcel = []
+ccc = []
+for i in range(0,len(dires)):
+   # print(dires)
+    print(filename[i])
+    for j in range(0,len(filename[i+1])):
+        try:
+            FilePath = path+'\\'+dires[0][i]+'\\'+filename[i+1][j]
+            print(FilePath)
+            excels = pd.ExcelFile(FilePath)
+            sheetnames = excels.sheet_names
+            for Sheet in sheetnames:
+                data = pd.read_excel(FilePath,sheet_name=Sheet)
+                col = data.columns
+                for coll in col[5:-1]:
+                    for kwords in kwrds:
+                        try:
+                            q = data.loc[data[coll].str.contains(kwords,na=False)]
+                            if len(q)==0:continue
+                            else:
+                                ccc.append(q)
+                                print(coll,' OK!')
+                        except:
+                            print('F**k')
+                            pass
+            print(dires[0][i],' success!')
+        except:
+            print(filename[i+1][j],' fail!')
+            cannotexcel.append(filename[i+1][j])
+            pass
+    print("*"*80)
