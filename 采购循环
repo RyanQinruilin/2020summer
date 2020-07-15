@@ -1,0 +1,25 @@
+import pandas as pd
+
+data = pd.read_excel('E:\采购循环\工作簿2017.xlsx')
+data2 = pd.read_excel(r'E:\采购循环\穿行测试2017.xlsx')
+data3 = pd.read_excel(r'E:\采购循环\目录2017.xlsx')
+
+k = 206
+i = k-1
+pre = data3[['主体名称','记账凭证']].iloc[i]
+
+hosloc = pre['主体名称']
+pzh = pre['记账凭证'][-4:]
+print(hosloc,pzh)
+
+data2.loc[(data2['核算主体'].str.contains(hosloc))&(data2['凭证号'].str.contains(pzh))&(data2['科目']=='采购循环')]
+
+data.loc[(data['库存组织'].str.contains(hosloc))&(data['凭证号'].str.contains(pzh))]\
+
+gys =''
+
+result= data.loc[(data['库存组织'].str.contains(hosloc))&(data['供应商'].str.contains(gys))&(data['凭证号'].str.contains(pzh))]
+result
+print('供应商: ',list(set(result['供应商'].values)),'\n',
+      '物料名称: ',list(set(result['物料名称'].values)),'\n',
+     '编号：',list(set(result['单据编号'].values)))
